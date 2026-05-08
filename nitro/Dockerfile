@@ -8,6 +8,7 @@ RUN apk add mysql-client
 RUN apk add supervisor
 RUN apk add rsync
 
-RUN yarn global add http-server
+RUN yarn config set network-timeout 600000 -g
+RUN npm install -g http-server
 
 RUN yarn install

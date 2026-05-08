@@ -1,0 +1,29 @@
+{
+	auto_https off
+}
+
+:8090 {
+	@websocket {
+		header Connection *Upgrade*
+		header Upgrade websocket
+	}
+	handle @websocket {
+		reverse_proxy 127.0.0.1:2096
+	}
+
+	handle_path /ws* {
+		reverse_proxy 127.0.0.1:2096
+	}
+
+	handle_path /assets/* {
+		reverse_proxy 127.0.0.1:8080
+	}
+
+	handle_path /swf/* {
+		reverse_proxy 127.0.0.1:8081
+	}
+
+	handle {
+		reverse_proxy 127.0.0.1:1080
+	}
+}
