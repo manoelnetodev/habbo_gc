@@ -2,6 +2,14 @@
 
 supervisord -c /app/supervisor/supervisord.conf
 
+# Auto-clone arcturus source if the mounted directory is empty (EasyPanel
+# does not run `git submodule update` after cloning the parent repo).
+if [ ! -e /app/arcturus/pom.xml ]; then
+  echo "[bootstrap] cloning Arcturus into /app/arcturus"
+  rm -rf /app/arcturus
+  git clone --depth 1 https://git.krews.org/morningstar/Arcturus-Community.git /app/arcturus
+fi
+
 cd /app/arcturus
 mvn package
 cp /app/config.ini /app/arcturus/target/config.ini

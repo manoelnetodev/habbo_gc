@@ -1,5 +1,23 @@
 supervisord -c /app/supervisor/supervisord.conf
 
+# Auto-clone any submodule whose mounted directory is empty. EasyPanel only does
+# `git clone` of the parent repo (no `git submodule update`), so without this
+# step `/app/nitro-converter`, `/app/nitro-swf` and `/app/nitro-assets` are
+# bind-mounted but empty, breaking every later step.
+clone_if_empty() {
+  local target="$1"
+  local url="$2"
+  if [ ! -e "${target}/.git" ] && [ ! -e "${target}/package.json" ] && [ ! -e "${target}/gamedata" ] && [ ! -e "${target}/gordon" ]; then
+    echo "[bootstrap] cloning ${url} into ${target}"
+    rm -rf "${target}"
+    git clone --depth 1 "${url}" "${target}"
+  fi
+}
+
+clone_if_empty /app/nitro-converter https://github.com/billsonnn/nitro-converter.git
+clone_if_empty /app/nitro-swf       https://git.krews.org/morningstar/arcturus-morningstar-default-swf-pack.git
+clone_if_empty /app/nitro-assets    https://git.krews.org/nitro/default-assets.git
+
 mkdir -p /app/nitro-assets/gamedata
 cp -f /app/configuration/gamedata-overrides/*.json /app/nitro-assets/gamedata/ 2>/dev/null || true
 
