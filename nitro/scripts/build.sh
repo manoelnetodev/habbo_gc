@@ -1,22 +1,31 @@
 supervisord -c /app/supervisor/supervisord.conf
 
-# Auto-clone any submodule whose mounted directory is empty. EasyPanel only does
-# `git clone` of the parent repo (no `git submodule update`), so without this
-# step `/app/nitro-converter`, `/app/nitro-swf` and `/app/nitro-assets` are
-# bind-mounted but empty, breaking every later step.
-clone_if_empty() {
+# Auto-populate any submodule whose mounted directory is empty. EasyPanel
+# clones the parent repo but does not run `git submodule update`. Use git
+# init + fetch + reset because some target dirs already have a `node_modules`
+# volume mount inside them and `git clone` refuses non-empty directories.
+populate_if_empty() {
   local target="$1"
   local url="$2"
-  if [ ! -e "${target}/.git" ] && [ ! -e "${target}/package.json" ] && [ ! -e "${target}/gamedata" ] && [ ! -e "${target}/gordon" ]; then
-    echo "[bootstrap] cloning ${url} into ${target}"
-    rm -rf "${target}"
-    git clone --depth 1 "${url}" "${target}"
+  local sentinel="$3"
+  if [ -e "${target}/${sentinel}" ]; then
+    return 0
   fi
+  echo "[bootstrap] populating ${target} from ${url}"
+  mkdir -p "${target}"
+  (
+    cd "${target}"
+    git init -q
+    git remote remove origin 2>/dev/null || true
+    git remote add origin "${url}"
+    git fetch --depth 1 origin HEAD
+    git reset --hard FETCH_HEAD
+  )
 }
 
-clone_if_empty /app/nitro-converter https://github.com/billsonnn/nitro-converter.git
-clone_if_empty /app/nitro-swf       https://git.krews.org/morningstar/arcturus-morningstar-default-swf-pack.git
-clone_if_empty /app/nitro-assets    https://git.krews.org/nitro/default-assets.git
+populate_if_empty /app/nitro-converter https://github.com/billsonnn/nitro-converter.git package.json
+populate_if_empty /app/nitro-swf       https://git.krews.org/morningstar/arcturus-morningstar-default-swf-pack.git gordon
+populate_if_empty /app/nitro-assets    https://git.krews.org/nitro/default-assets.git README.md
 
 mkdir -p /app/nitro-assets/gamedata
 cp -f /app/configuration/gamedata-overrides/*.json /app/nitro-assets/gamedata/ 2>/dev/null || true
