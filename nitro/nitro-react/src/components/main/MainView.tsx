@@ -7,6 +7,7 @@ import { AvatarEditorView } from '../avatar-editor/AvatarEditorView';
 import { CatalogView } from '../catalog/CatalogView';
 import { ChatHistoryView } from '../chat-history/ChatHistoryView';
 import { FloorplanEditorView } from '../floorplan-editor/FloorplanEditorView';
+import { InventoryView } from '../inventory/InventoryView';
 import { LandingView } from '../landing/LandingView';
 import { NameGate } from '../name-gate/NameGate';
 import { NavigatorView } from '../navigator/NavigatorView';
@@ -78,6 +79,7 @@ export const MainView: FC<{}> = props =>
             <AvatarEditorView />
             <NavigatorView />
             <CatalogView />
+            <InventoryView />
             <RightSideView />
             <UserSettingsView />
             <UserProfileView />
