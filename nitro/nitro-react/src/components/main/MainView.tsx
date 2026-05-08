@@ -4,6 +4,7 @@ import { AddEventLinkTracker, GetCommunication, RemoveLinkEventTracker } from '.
 import { Base } from '../../common';
 import { useRoomSessionManagerEvent } from '../../hooks';
 import { AvatarEditorView } from '../avatar-editor/AvatarEditorView';
+import { CatalogView } from '../catalog/CatalogView';
 import { ChatHistoryView } from '../chat-history/ChatHistoryView';
 import { FloorplanEditorView } from '../floorplan-editor/FloorplanEditorView';
 import { LandingView } from '../landing/LandingView';
@@ -76,6 +77,7 @@ export const MainView: FC<{}> = props =>
             <ChatHistoryView />
             <AvatarEditorView />
             <NavigatorView />
+            <CatalogView />
             <RightSideView />
             <UserSettingsView />
             <UserProfileView />
