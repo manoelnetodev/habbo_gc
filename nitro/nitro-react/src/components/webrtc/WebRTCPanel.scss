@@ -1,0 +1,188 @@
+.gc-webrtc-panel {
+    position: fixed;
+    right: 12px;
+    top: 12px;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.gc-webrtc-tiles {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: auto;
+}
+
+.gc-tile {
+    position: relative;
+    width: 200px;
+    height: 150px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #15191F;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &.is-self {
+        width: 160px;
+        height: 120px;
+        border-color: rgba(2, 199, 107, 0.5);
+    }
+
+    &.is-cam-off {
+        background: #0D1014;
+    }
+
+    &.is-speaking {
+        border-color: #02C76B;
+        box-shadow: 0 0 0 2px rgba(2, 199, 107, 0.55), 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+}
+
+.gc-tile-meter {
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    top: 6px;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.gc-tile-meter-fill {
+    height: 100%;
+    background: #02C76B;
+    transition: width 0.1s linear;
+}
+
+.gc-tile-camoff {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    color: rgba(255, 255, 255, 0.45);
+    pointer-events: none;
+}
+
+.gc-tile-label {
+    position: absolute;
+    left: 6px;
+    bottom: 6px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    backdrop-filter: blur(4px);
+}
+
+.gc-tile-mute {
+    font-size: 11px;
+}
+
+.gc-webrtc-controls {
+    display: flex;
+    gap: 8px;
+    align-self: flex-end;
+    pointer-events: auto;
+}
+
+.gc-webrtc-btn {
+    appearance: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(13, 16, 20, 0.85);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+    transition: background 0.15s ease, transform 0.1s ease;
+
+    &:hover {
+        background: rgba(2, 199, 107, 0.25);
+    }
+
+    &:active {
+        transform: scale(0.94);
+    }
+
+    &.is-off {
+        background: rgba(220, 53, 69, 0.85);
+        border-color: rgba(220, 53, 69, 0.95);
+    }
+}
+
+.gc-webrtc-btn.is-on {
+    background: rgba(2, 199, 107, 0.85);
+    border-color: rgba(2, 199, 107, 0.95);
+    color: #0D1014;
+}
+
+.gc-webrtc-tuner {
+    align-self: flex-end;
+    width: 200px;
+    background: rgba(13, 16, 20, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: #fff;
+    pointer-events: auto;
+    backdrop-filter: blur(6px);
+
+    input[type="range"] {
+        width: 100%;
+        accent-color: #02C76B;
+    }
+}
+
+.gc-webrtc-tuner-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 6px;
+}
+
+.gc-webrtc-tuner-value {
+    font-variant-numeric: tabular-nums;
+    color: #02C76B;
+}
+
+.gc-webrtc-tuner-hint {
+    margin-top: 6px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.gc-webrtc-error {
+    background: rgba(220, 53, 69, 0.9);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    max-width: 200px;
+    pointer-events: auto;
+}

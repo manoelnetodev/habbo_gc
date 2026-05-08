@@ -1,0 +1,91 @@
+.gc-landing {
+    position: absolute;
+    inset: 0;
+    background: #0D1014;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 40px 24px 120px;
+    overflow: auto;
+    z-index: 10;
+}
+
+.gc-landing-logo {
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 24px rgba(2, 199, 107, 0.35));
+    margin-bottom: 8px;
+}
+
+.gc-landing-title {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.gc-landing-subtitle {
+    margin: 0 0 16px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+}
+
+.gc-landing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 260px));
+    gap: 16px;
+    width: 100%;
+    max-width: 880px;
+    justify-content: center;
+}
+
+.gc-landing-card {
+    appearance: none;
+    background: #15191F;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 28px 20px;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    text-align: left;
+
+    &:hover {
+        transform: translateY(-2px);
+        border-color: rgba(2, 199, 107, 0.55);
+        background: #1A1F26;
+    }
+
+    &:focus-visible {
+        outline: 2px solid #02C76B;
+        outline-offset: 2px;
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+.gc-landing-card-icon {
+    font-size: 28px;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.gc-landing-card-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.gc-landing-card-sub {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+}

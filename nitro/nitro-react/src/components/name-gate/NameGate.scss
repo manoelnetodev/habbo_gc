@@ -1,0 +1,98 @@
+.gc-name-gate {
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 16, 20, 0.92);
+    backdrop-filter: blur(6px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.gc-name-gate-card {
+    background: #15191F;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 32px 28px;
+    width: 360px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+.gc-name-gate-logo {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 18px rgba(2, 199, 107, 0.35));
+    margin-bottom: 4px;
+}
+
+.gc-name-gate-title {
+    margin: 0;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.gc-name-gate-sub {
+    margin: 0 0 8px;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 13px;
+    text-align: center;
+}
+
+.gc-name-gate-input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: #0D1014;
+    color: #fff;
+    font-size: 15px;
+    outline: none;
+
+    &:focus {
+        border-color: #02C76B;
+        box-shadow: 0 0 0 3px rgba(2, 199, 107, 0.15);
+    }
+}
+
+.gc-name-gate-btn {
+    appearance: none;
+    width: 100%;
+    margin-top: 4px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: none;
+    background: #02C76B;
+    color: #0D1014;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.1s ease;
+
+    &:hover { filter: brightness(1.05); }
+    &:active { transform: scale(0.98); }
+
+    &:disabled {
+        background: rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.5);
+        cursor: not-allowed;
+    }
+}
+
+.gc-name-gate-error {
+    width: 100%;
+    color: #ff7a8b;
+    font-size: 13px;
+    background: rgba(255, 122, 139, 0.1);
+    padding: 8px 10px;
+    border-radius: 8px;
+    text-align: center;
+}
