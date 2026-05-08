@@ -1,14 +1,17 @@
 import { FC, useState } from 'react';
-import { CreateLinkEvent, VisitDesktop } from '../../api';
+import { CreateLinkEvent, GetSessionDataManager, VisitDesktop } from '../../api';
 import { Base, Flex, LayoutAvatarImageView, TransitionAnimation, TransitionAnimationTypes } from '../../common';
 import { useSessionInfo } from '../../hooks';
 import { ToolbarMeView } from './ToolbarMeView';
+
+const CATALOG_ALLOWED_USER_IDS = [ 1, 2 ];
 
 export const ToolbarView: FC<{ isInRoom: boolean }> = props =>
 {
     const { isInRoom } = props;
     const [ isMeExpanded, setMeExpanded ] = useState(false);
     const { userFigure = null } = useSessionInfo();
+    const canSeeCatalog = CATALOG_ALLOWED_USER_IDS.includes(GetSessionDataManager().userId);
 
     return (
         <>
@@ -26,7 +29,8 @@ export const ToolbarView: FC<{ isInRoom: boolean }> = props =>
                         { !isInRoom &&
                             <Base pointer className="navigation-item icon icon-house" onClick={ event => CreateLinkEvent('navigator/goto/home') } /> }
                         <Base pointer className="navigation-item icon icon-rooms" onClick={ event => CreateLinkEvent('navigator/toggle') } />
-                        <Base pointer className="navigation-item icon icon-catalog" onClick={ event => CreateLinkEvent('catalog/toggle') } />
+                        { canSeeCatalog &&
+                            <Base pointer className="navigation-item icon icon-catalog" onClick={ event => CreateLinkEvent('catalog/toggle') } /> }
                     </Flex>
                     <Flex alignItems="center" id="toolbar-chat-input-container" />
                 </Flex>
