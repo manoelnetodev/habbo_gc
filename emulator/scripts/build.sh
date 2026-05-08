@@ -21,10 +21,17 @@ fi
 
 cd /app/arcturus
 mvn package
+
+# Stable symlink so supervisord doesn't have to track the upstream version bump
+# (the Arcturus repo currently builds Habbo-3.5.5-jar-with-dependencies.jar but
+# previously was 3.5.0; let the build.sh paper over this).
+ln -sf "$(ls -1 /app/arcturus/target/Habbo-*-jar-with-dependencies.jar | head -1)" \
+       /app/arcturus/target/Habbo.jar
+
 cp /app/config.ini /app/arcturus/target/config.ini
-mkdir /app/arcturus/target/plugins
+mkdir -p /app/arcturus/target/plugins
 cd /app/arcturus/target/plugins
-wget https://git.krews.org/morningstar/nitrowebsockets-for-ms/-/raw/aff34551b54527199401b343a35f16076d1befd5/target/NitroWebsockets-3.1.jar
+[ -f NitroWebsockets-3.1.jar ] || wget https://git.krews.org/morningstar/nitrowebsockets-for-ms/-/raw/aff34551b54527199401b343a35f16076d1befd5/target/NitroWebsockets-3.1.jar
 
 supervisorctl start arcturus-emulator
 
