@@ -1,5 +1,8 @@
 supervisord -c /app/supervisor/supervisord.conf
 
+mkdir -p /app/nitro-assets/gamedata
+cp -f /app/configuration/gamedata-overrides/*.json /app/nitro-assets/gamedata/ 2>/dev/null || true
+
 cp /app/configuration/nitro-converter/configuration.json /app/nitro-converter/src/configuration.json
 cd /app/nitro-converter
 for i in 1 2 3 4 5; do
