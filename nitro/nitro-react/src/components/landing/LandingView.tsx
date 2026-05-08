@@ -1,12 +1,44 @@
-import { FC } from 'react';
-import { CreateLinkEvent, TryVisitRoom } from '../../api';
+import { NavigatorSearchComposer, NavigatorSearchEvent } from '@nitrots/nitro-renderer';
+import { FC, useRef } from 'react';
+import { CreateLinkEvent, SendMessageComposer, TryVisitRoom } from '../../api';
 import gcLogo from '../../assets/images/loading/gc-logo.svg';
+import { useMessageEvent } from '../../hooks';
+
+const STUDY_ROOM_NAME = 'Estudos';
 
 export const LandingView: FC<{}> = () =>
 {
-    const goStudyRoom = () => TryVisitRoom(50);
+    const awaitingStudySearch = useRef(false);
+
+    const goStudyRoom = () =>
+    {
+        awaitingStudySearch.current = true;
+        SendMessageComposer(new NavigatorSearchComposer('myworld_view', STUDY_ROOM_NAME));
+    };
     const openAvatar = () => CreateLinkEvent('avatar-editor/toggle');
     const openNavigator = () => CreateLinkEvent('navigator/toggle');
+
+    useMessageEvent<NavigatorSearchEvent>(NavigatorSearchEvent, event =>
+    {
+        if(!awaitingStudySearch.current) return;
+
+        awaitingStudySearch.current = false;
+
+        const parser = event.getParser();
+        const target = STUDY_ROOM_NAME.toLowerCase();
+
+        for(const list of parser.result.results)
+        {
+            for(const room of list.rooms)
+            {
+                if(room.roomName.toLowerCase() === target)
+                {
+                    TryVisitRoom(room.roomId);
+                    return;
+                }
+            }
+        }
+    });
 
     return (
         <div className="gc-landing">
