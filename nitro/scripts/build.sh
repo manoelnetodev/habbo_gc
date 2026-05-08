@@ -65,4 +65,23 @@ supervisorctl start swf-http-server
 supervisorctl start assets-http-server
 supervisorctl start nitro-dev-server
 
+# First-boot SWF → .nitro conversion. The converter consumes /app/nitro-swf
+# (cloned above) and writes into /app/nitro-converter/assets, which we then
+# rsync into /app/nitro-assets so the running assets-http-server can serve
+# them. Heavy: ~30-90 min for ~10k furniture SWFs depending on the VPS.
+# Re-runs on subsequent boots are no-ops because each iteration of the
+# converter skips files that already exist on disk.
+if [ ! -f /app/nitro-assets/gamedata/ExternalTexts.json ]; then
+  echo "[bootstrap] generating nitro assets from SWFs — this takes ~30-90 min on first boot"
+  cp /app/configuration/nitro-converter/configuration.json /app/nitro-converter/configuration.json
+  (
+    cd /app/nitro-converter
+    yarn ts-node-dev --transpile-only src/Main.ts
+  )
+  rsync -r /app/nitro-converter/assets/* /app/nitro-assets/
+  cp -f /app/configuration/gamedata-overrides/*.json /app/nitro-assets/gamedata/ 2>/dev/null || true
+  python3 /app/scripts/unlock-figure.py /app/nitro-assets/gamedata/FigureData.json || true
+  echo "[bootstrap] asset conversion done"
+fi
+
 tail -f /dev/null
