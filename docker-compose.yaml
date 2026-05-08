@@ -9,14 +9,13 @@ volumes:
 
 services:
   caddy:
-    container_name: caddy
     image: caddy:2-alpine
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - volume-caddy-data:/data
       - volume-caddy-config:/config
-    ports:
-      - "8090:8090"
+    expose:
+      - "8090"
     depends_on:
       - nitro
       - arcturus
@@ -26,7 +25,6 @@ services:
     restart: unless-stopped
 
   arcturus:
-    container_name: arcturus
     build:
       context: emulator
     entrypoint: ["/bin/sh","/app/scripts/build.sh"]
@@ -41,7 +39,6 @@ services:
     restart: unless-stopped
 
   nitro:
-    container_name: nitro
     build:
       context: nitro
     entrypoint: ["/bin/sh","/app/scripts/build.sh"]
@@ -57,7 +54,6 @@ services:
     restart: unless-stopped
 
   signaling:
-    container_name: signaling
     build:
       context: signaling
     networks:
@@ -65,7 +61,6 @@ services:
     restart: unless-stopped
 
   mysql:
-    container_name: mysql
     image: mariadb:10.6
     command: --default-authentication-plugin=mysql_native_password
     environment:
