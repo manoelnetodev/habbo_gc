@@ -1,8 +1,8 @@
 {
-    "socket.url": "wss://drill-prot-lie-innovation.trycloudflare.com/ws",
-    "asset.url": "https://drill-prot-lie-innovation.trycloudflare.com/assets",
-    "image.library.url": "https://drill-prot-lie-innovation.trycloudflare.com/swf/c_images/",
-    "hof.furni.url": "https://drill-prot-lie-innovation.trycloudflare.com/swf/dcr/hof_furni",
+    "socket.url": "__WS__/ws",
+    "asset.url": "__HTTP__/assets",
+    "image.library.url": "__HTTP__/swf/c_images/",
+    "hof.furni.url": "__HTTP__/swf/dcr/hof_furni",
     "images.url": "${asset.url}/images",
     "gamedata.url": "${asset.url}/gamedata",
     "sounds.url": "${asset.url}/sounds/%sample%.mp3",

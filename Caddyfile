@@ -3,27 +3,23 @@
 }
 
 :8090 {
-	@websocket {
-		header Connection *Upgrade*
-		header Upgrade websocket
-	}
-	handle @websocket {
-		reverse_proxy 127.0.0.1:2096
+	handle_path /signaling* {
+		reverse_proxy signaling:8765
 	}
 
 	handle_path /ws* {
-		reverse_proxy 127.0.0.1:2096
+		reverse_proxy arcturus:2096
 	}
 
 	handle_path /assets/* {
-		reverse_proxy 127.0.0.1:8080
+		reverse_proxy nitro:8080
 	}
 
 	handle_path /swf/* {
-		reverse_proxy 127.0.0.1:8081
+		reverse_proxy nitro:8081
 	}
 
 	handle {
-		reverse_proxy 127.0.0.1:1080
+		reverse_proxy nitro:5154
 	}
 }

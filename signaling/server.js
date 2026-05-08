@@ -1,7 +1,55 @@
 import { WebSocketServer } from 'ws';
 import { createServer } from 'http';
+import mysql from 'mysql2/promise';
 
 const PORT = Number(process.env.PORT ?? 8765);
+
+const db = mysql.createPool({
+  host: process.env.DB_HOST ?? 'mysql',
+  port: Number(process.env.DB_PORT ?? 3306),
+  user: process.env.DB_USER ?? 'arcturus_user',
+  password: process.env.DB_PASSWORD ?? 'arcturus_pw',
+  database: process.env.DB_NAME ?? 'arcturus',
+  connectionLimit: 5
+});
+
+const NAME_RE = /^[\p{L}\p{N} _-]{2,24}$/u;
+
+async function readJson(req) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    req.on('data', c => chunks.push(c));
+    req.on('end', () => {
+      try { resolve(JSON.parse(Buffer.concat(chunks).toString() || '{}')); }
+      catch (e) { reject(e); }
+    });
+    req.on('error', reject);
+  });
+}
+
+async function setName(sso, name) {
+  if (!sso || !name || !NAME_RE.test(name)) {
+    return { ok: false, status: 400, error: 'invalid input' };
+  }
+  try {
+    const [ existing ] = await db.query(
+      'SELECT id FROM users WHERE username = ? AND auth_ticket <> ? LIMIT 1',
+      [ name, String(sso) ]
+    );
+    if (existing.length) return { ok: false, status: 409, error: 'name taken' };
+
+    const [ r ] = await db.query(
+      'UPDATE users SET username = ? WHERE auth_ticket = ?',
+      [ name, String(sso) ]
+    );
+    if (!r.affectedRows) return { ok: false, status: 404, error: 'sso not found' };
+
+    return { ok: true };
+  } catch (e) {
+    console.error('[set-name]', e.message);
+    return { ok: false, status: 500, error: 'db error' };
+  }
+}
 
 // roomId -> Map<peerId, ws>
 const rooms = new Map();
@@ -66,12 +114,40 @@ function relay(ws, msg) {
   send(target, { ...msg, from: ws._peerId });
 }
 
-const httpServer = createServer((req, res) => {
+const httpServer = createServer(async (req, res) => {
+  if (req.url !== '/health') console.log(`[http] ${req.method} ${req.url}`);
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'access-control-allow-origin': '*',
+      'access-control-allow-methods': 'POST, GET, OPTIONS',
+      'access-control-allow-headers': 'content-type'
+    });
+    res.end();
+    return;
+  }
+
   if (req.url === '/health') {
     res.writeHead(200, { 'content-type': 'application/json' });
     res.end(JSON.stringify({ ok: true, rooms: rooms.size }));
     return;
   }
+
+  if (req.method === 'POST' && req.url === '/set-name') {
+    let body;
+    try { body = await readJson(req); }
+    catch { res.writeHead(400); res.end('bad json'); return; }
+    const { sso, name } = body ?? {};
+    console.log(`[set-name] sso=${JSON.stringify(sso)} name=${JSON.stringify(name)}`);
+    const result = await setName(sso, name);
+    console.log(`[set-name] result`, result);
+    res.writeHead(result.ok ? 200 : result.status, {
+      'content-type': 'application/json',
+      'access-control-allow-origin': '*'
+    });
+    res.end(JSON.stringify(result));
+    return;
+  }
+
   res.writeHead(404);
   res.end();
 });
@@ -101,6 +177,7 @@ wss.on('connection', (ws, req) => {
       case 'webrtc-answer':
       case 'webrtc-ice':
       case 'mute-state':
+      case 'display-name':
         if (msg.to) relay(ws, msg);
         break;
       case 'ping':
