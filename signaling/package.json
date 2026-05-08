@@ -1,0 +1,16 @@
+{
+  "name": "gather-signaling",
+  "version": "0.1.0",
+  "description": "WebRTC signaling sidecar for nitro-docker gather pivot",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

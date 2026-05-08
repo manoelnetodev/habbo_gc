@@ -82,4 +82,6 @@ extract-nitro-assets:
   docker exec -it nitro bash -c "cd /app/nitro-converter; yarn ts-node-dev --transpile-only src/Main.ts"
   docker exec -it nitro bash -c "echo 'Moving assets...'"
   docker exec -it nitro bash -c "rsync -r /app/nitro-converter/assets/* /app/nitro-assets/"
+  docker exec -it nitro bash -c "cp -f /app/configuration/gamedata-overrides/*.json /app/nitro-assets/gamedata/ 2>/dev/null || true"
+  docker exec -it nitro bash -c "python3 /app/scripts/unlock-figure.py /app/nitro-assets/gamedata/FigureData.json"
   docker exec -it nitro bash -c "echo 'Done !'"

@@ -106,8 +106,8 @@
     "achievements.unseen.ignored": [
         "ACH_AllTimeHotelPresence"
     ],
-    "avatareditor.show.clubitems.dimmed": true,
-    "avatareditor.show.clubitems.first": true,
+    "avatareditor.show.clubitems.dimmed": false,
+    "avatareditor.show.clubitems.first": false,
     "chat.history.max.items": 100,
     "system.currency.types": [
         -1,

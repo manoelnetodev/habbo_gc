@@ -42,6 +42,16 @@ services:
     networks:
       nitro:
 
+  signaling:
+    container_name: signaling
+    build:
+      context: signaling
+    ports:
+      - 8765:8765
+    networks:
+      nitro:
+    restart: unless-stopped
+
   mysql:
     container_name: mysql
     image: mariadb:10.6
