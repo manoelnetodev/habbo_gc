@@ -2,12 +2,21 @@
 
 supervisord -c /app/supervisor/supervisord.conf
 
-# Auto-clone arcturus source if the mounted directory is empty (EasyPanel
-# does not run `git submodule update` after cloning the parent repo).
+# Auto-populate arcturus source. EasyPanel does not run `git submodule update`,
+# so /app/arcturus comes up bind-mounted but empty (or with just a `target/`
+# volume mounted inside it). Use git init + fetch instead of `git clone` so
+# leftover/volume directories don't block the bootstrap.
 if [ ! -e /app/arcturus/pom.xml ]; then
-  echo "[bootstrap] cloning Arcturus into /app/arcturus"
-  rm -rf /app/arcturus
-  git clone --depth 1 https://git.krews.org/morningstar/Arcturus-Community.git /app/arcturus
+  echo "[bootstrap] populating /app/arcturus from Arcturus-Community.git"
+  mkdir -p /app/arcturus
+  (
+    cd /app/arcturus
+    git init -q
+    git remote remove origin 2>/dev/null || true
+    git remote add origin https://git.krews.org/morningstar/Arcturus-Community.git
+    git fetch --depth 1 origin HEAD
+    git reset --hard FETCH_HEAD
+  )
 fi
 
 cd /app/arcturus
